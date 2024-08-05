@@ -1,5 +1,7 @@
 # nestjs-prisma-crud
+
 Crud_nest_Api_with_Prisma
+
 <p align="center">
   <a href="http://nestjs.com/" target="blank"><img src="https://nestjs.com/img/logo-small.svg" width="200" alt="Nest Logo" /></a>
 </p>
@@ -77,41 +79,38 @@ Nest is [MIT licensed](LICENSE).
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 comandos esenciales
-1.npm i / instalar dependencias 
-2.npm run start:dev  / correr el projecto
-3.nest new nestjs-prisma-crud  / instalar el proyecto
-4. npx prisma init --datasource-provider SQLite / para instalar la base de datos SQLite también podemos trabajar con postgres etc
-5.npx prisma migrate dev --name init  / migración a la base de datos
-6. npx prisma generate / mandar la migración y actualizar en la bd
-7.npx prettier --write .  / refactorizar codido prettier de nest
-
+1.npm i / instalar dependencias
+2.npm run start:dev / correr el projecto
+3.nest new nestjs-prisma-crud / instalar el proyecto 4. npx prisma init --datasource-provider SQLite / para instalar la base de datos SQLite también podemos trabajar con postgres etc
+5.npx prisma migrate dev --name init / migración a la base de datos 6. npx prisma generate / mandar la migración y actualizar en la bd
+7.npx prettier --write . / refactorizar codido prettier de nest
 
 Pasos para realizar el crud
 
 Instalamos nest
-1.instalamos nest o el proyecto 
-*nest new nestjs-prisma-crud
+1.instalamos nest o el proyecto
+\*nest new nestjs-prisma-crud
 
-2.eliminamos los archivos por dentro de src  controllers-service y el de testing
+2.eliminamos los archivos por dentro de src controllers-service y el de testing
 
-3.en el app.module.ts quitamos las importaciones de los archivos anteriores que eliminamos 
+3.en el app.module.ts quitamos las importaciones de los archivos anteriores que eliminamos
 
-*import { Module } from '@nestjs/common';
+\*import { Module } from '@nestjs/common';
 
 @Module({
-  imports: [],
-  controllers: [],
-  providers: [],
+imports: [],
+controllers: [],
+providers: [],
 })
 export class AppModule {}
 
-4.instalamos prima 
-*npm i prima -D
+4.instalamos prima
+\*npm i prima -D
 
-5.iniciamos nustra configuración de prisma 
-*npx prisma init = asi es para trabajarlo con PostgreSQL pero en este caso vamos a usar sqlLite
+5.iniciamos nustra configuración de prisma
+\*npx prisma init = asi es para trabajarlo con PostgreSQL pero en este caso vamos a usar sqlLite
 
-*npx prisma init --datasource-provider SQLite = se creara un env y un archivo prisma
+\*npx prisma init --datasource-provider SQLite = se creara un env y un archivo prisma
 
 6.ahora en nuestro archivo schema.prisma creamos nuestra tabla tareas:
 ////////////////////////////////////////////////////////////////////////////
@@ -119,24 +118,23 @@ export class AppModule {}
 // learn more about it in the docs: https://pris.ly/d/prisma-schema
 
 generator client {
-  provider = "prisma-client-js"
+provider = "prisma-client-js"
 }
 
 datasource db {
-  provider = "sqlite"
-  url      = env("DATABASE_URL")
+provider = "sqlite"
+url = env("DATABASE_URL")
 }
 
 model Taks{
-  id        Int      @id @default(autoincrement())
-  title     String
-  description String?
+id Int @id @default(autoincrement())
+title String
+description String?
 
 }
 
-
 7.vamos a generar la tabla o convertirlo en una tabla
-*npx prisma migrate dev --name init
+\*npx prisma migrate dev --name init
 
 8.ahora vamos a crear un modulo de conexión y creamos en src una carpeta llamada prima
 
@@ -147,11 +145,11 @@ import { Injectable, OnModuleInit } from '@nestjs/common';
 import { PrismaClient } from '@prisma/client';
 @Injectable()
 export class PrismaService extends PrismaClient implements OnModuleInit {
-  Task: any;
-  async onModuleInit() {
-    await this.$connect();
-    console.log('Connected to the database');
-  }
+Task: any;
+async onModuleInit() {
+await this.$connect();
+console.log('Connected to the database');
+}
 }
 
 10.luego creanos el siguiente archivo src/prisma/prisma.module.ts
@@ -160,9 +158,9 @@ import { Module } from '@nestjs/common';
 import { PrismaService } from './prisma.service';
 
 @Module({
-  //imports: [],
-  providers: [PrismaService],
-  exports: [PrismaService],
+//imports: [],
+providers: [PrismaService],
+exports: [PrismaService],
 })
 export class PrismaModule {}
 
@@ -180,87 +178,86 @@ import { Task } from '@prisma/client';
 
 @Injectable()
 export class TaskService {
-  constructor(private prisma: PrismaService) {}
-  //metodo get para obtener
-  async getAllTasks(): Promise<Task[]> {
-    return this.prisma.task.findMany();
-  }
-  //finaliza el metodo
-  //metodo para obtener usuario o tarea por id
-  async getTasksById(id: number): Promise<Task> {
-    return this.prisma.task.findUnique({
-      where: { id: Number(id) },
-    });
-  }
-  //metodo parar crear tarea o usuarioA
-  async createTasks(data: Task): Promise<Task> {
-    return this.prisma.task.create({
-      data,
-    });
-  }
-  //metodo para actualizar tareas o datos
-  async updateTasks(id: number, data: Task): Promise<Task> {
-    return this.prisma.task.update({
-      where: { id },
-      data,
-    });
-  }
+constructor(private prisma: PrismaService) {}
+//metodo get para obtener
+async getAllTasks(): Promise<Task[]> {
+return this.prisma.task.findMany();
+}
+//finaliza el metodo
+//metodo para obtener usuario o tarea por id
+async getTasksById(id: number): Promise<Task> {
+return this.prisma.task.findUnique({
+where: { id: Number(id) },
+});
+}
+//metodo parar crear tarea o usuarioA
+async createTasks(data: Task): Promise<Task> {
+return this.prisma.task.create({
+data,
+});
+}
+//metodo para actualizar tareas o datos
+async updateTasks(id: number, data: Task): Promise<Task> {
+return this.prisma.task.update({
+where: { id },
+data,
+});
+}
 
-  //metodo para eliminar datos tareas o usuarios
-  async deleteTasks(id: number): Promise<Task> {
-    return this.prisma.task.delete({
-      where: { id },
-    });
-  }
+//metodo para eliminar datos tareas o usuarios
+async deleteTasks(id: number): Promise<Task> {
+return this.prisma.task.delete({
+where: { id },
+});
+}
 }
 
 15.ahora vamos al task.controller sirve para comunicarnos con el servicio ósea en el service se hace la lógica y luego en el controller es donde están los endpoint que sirve para conmunicarnos con el servicio o parte lógica
 
 ///////////////////////////////////////////////
 import {
-  Controller,
-  Get,
-  Post,
-  Put,
-  Delete,
-  Param,
-  Body,
-  NotFoundException,
+Controller,
+Get,
+Post,
+Put,
+Delete,
+Param,
+Body,
+NotFoundException,
 } from '@nestjs/common';
 import { TaskService } from './task.service';
 import { Task } from '@prisma/client';
 
 @Controller('tasks')
 export class TaskController {
-  constructor(private readonly taskService: TaskService) {}
-  // Implement CRUD operations here
-  @Get()
-  async getAllTasks() {
-    return this.taskService.getAllTasks();
-  }
-  @Get(':id')
-  async getTasksById(@Param('id') id: number) {
-    const taskFound = await this.taskService.getTasksById(id);
-    if (!taskFound) throw new NotFoundException('Task not exist');
-    return taskFound;
-  }
-  @Post()
-  async createTasks(@Body() data: Task) {
-    return this.taskService.createTasks(data);
-  }
-  @Put(':id')
-  async updateTasks(@Param('id') id: string, @Body() data: Task) {
-    return this.taskService.updateTasks(Number(id), data);
-  }
-  @Delete(':id')
-  async deleteTasks(@Param('id') id: string) {
-    try {
-      return await this.taskService.deleteTasks(Number(id));
-    } catch (error) {
-      throw new NotFoundException('Task not exist o no existe');
-    }
-  }
+constructor(private readonly taskService: TaskService) {}
+// Implement CRUD operations here
+@Get()
+async getAllTasks() {
+return this.taskService.getAllTasks();
+}
+@Get(':id')
+async getTasksById(@Param('id') id: number) {
+const taskFound = await this.taskService.getTasksById(id);
+if (!taskFound) throw new NotFoundException('Task not exist');
+return taskFound;
+}
+@Post()
+async createTasks(@Body() data: Task) {
+return this.taskService.createTasks(data);
+}
+@Put(':id')
+async updateTasks(@Param('id') id: string, @Body() data: Task) {
+return this.taskService.updateTasks(Number(id), data);
+}
+@Delete(':id')
+async deleteTasks(@Param('id') id: string) {
+try {
+return await this.taskService.deleteTasks(Number(id));
+} catch (error) {
+throw new NotFoundException('Task not exist o no existe');
+}
+}
 }
 
 16. Ejecutamos el projecto
-
