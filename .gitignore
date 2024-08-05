@@ -46,28 +46,3 @@ pids
 
 # Diagnostic reports (https://nodejs.org/api/report.html)
 report.[0-9]*.[0-9]*.[0-9]*.[0-9]*.json
-
-# Ensure SQLite database is not ignored
-!src/db/dev.db
-Resumen de pasos para el despliegue:
-Asegúrate de tener el archivo .env:
-
-Contenido del archivo .env:
-
-plaintext
-Copiar código
-DATABASE_URL="file:./src/db/dev.db"
-Estructura del proyecto:
-
-Verifica que tu proyecto tenga la siguiente estructura:
-
-bash
-Copiar código
-/my-project
-  /src
-    /db
-      dev.db
-  .env
-  package.json
-  schema.prisma
-  ...
